@@ -9,16 +9,16 @@ path(e, f).
 path(e, g).
 path(f, g).
 
-app([], Ys, Ys).
-app([X|Xs], Ys, [X|Zs]) :-
-    app(Xs, Ys, Zs).
-
-path(L, X, Y) :-
-    path(X, Y),
-    app(L, Y, Z),
-    write('Current L:'), write(Z);
-    path(X, U),
-    app(L, U, Z),
-    path(Z, U, Y).
+/*
+Skapar en lista med Head H och Tail(Resten av listan) T.
+Skapar relation mellan X och H så att H endast kan vara noder med path från X.
+Skickar in T och skapar nästa element i listan.
+Kollar om 
+*/
+path(X, Y, L) :-
+    path(X, Y), L =[Y];
+    L = [H|T],
+    path(X, H),
+    path(H, Y, T).
 
 
