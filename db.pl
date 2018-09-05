@@ -23,6 +23,8 @@ Person is happy if rich or mutual affection
 */
 happy(X) :-
     rich(X);
+    man(X),
+    woman(Y),
     likes(X, Y),
     likes(Y, X).
 
