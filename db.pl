@@ -18,7 +18,6 @@ strong(bosse).
 
 kind(bosse).
 
-
 /*
 Person is happy if rich or mutual affection
 */
@@ -53,8 +52,17 @@ likes(ulrika, X) :-
     ((rich(X),
     kind(X));
     (beatiful(X),
-    strong(X))).
-    
+    strong(X))),
+    likes(X, ulrika).
+
+likes_ulrika :-
+    setof(X, likes(X, ulrika), S),
+    length(S, N),
+    write('People who like ulrika: '),
+    write(S),
+    nl,
+    write(N),
+    write(' People likes ulrika').
 
 
 
