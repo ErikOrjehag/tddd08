@@ -16,9 +16,15 @@ Skickar in T och skapar nästa element i listan.
 Kollar om 
 */
 path(X, Y, L) :-
-    path(X, Y), L =[Y];
-    L = [H|T],
+    path(X, Y), L =[X, Y];
+    L = [X|T],
     path(X, H),
     path(H, Y, T).
 
+npath(X, Y, L) :-
+    path(X, Y, Z),
+    write('Path: '),
+    write(Z),
+    nl,
+    length(Z, L).
 
