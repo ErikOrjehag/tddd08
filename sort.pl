@@ -18,9 +18,8 @@ del(X, [X|Tail], Tail).
 del(X, [Y|Tail], [Y|Tail1]) :-
     del(X, Tail, Tail1).
 
-ssort([X], LS) :- LS = X.
-ssort(L, LS) :-
+ssort([], []).
+ssort(L, [S|LS]) :-
   smallest(L, S),
   del(S, L, L1),
-  append(LS, [S], LSS),
-  ssort(L1, LSS).
+  ssort(L1, LS).
