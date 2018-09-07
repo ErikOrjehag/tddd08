@@ -23,8 +23,8 @@ Person is happy if rich or mutual affection
 */
 happy(X) :-
     rich(X);
-    man(X),
-    woman(Y),
+    (man(X), woman(Y);
+     man(Y), woman(X)),
     likes(X, Y),
     likes(Y, X).
 
@@ -42,7 +42,7 @@ Nisse likes all women who like him
 */
 likes(nisse, Y) :-
     woman(Y),
-    likes(Y, Nisse).
+    likes(Y, nisse).
 
 /*
 Ulrika likes a man if
@@ -51,10 +51,10 @@ or beatiful and strong
 */
 likes(ulrika, X) :-
     man(X),
-    ((rich(X),
-    kind(X));
-    (beatiful(X),
-    strong(X))),
+    (
+      ( rich(X), kind(X) );
+      ( beatiful(X), strong(X) )
+    ),
     likes(X, ulrika).
 
 likes_ulrika :-
@@ -65,6 +65,3 @@ likes_ulrika :-
     nl,
     write(N),
     write(' People likes ulrika').
-
-
-
