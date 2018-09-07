@@ -1,17 +1,15 @@
 
 ascending([]).
 ascending([_]).
-ascending(L) :-
-  L = [X,Y|T],
+ascending([X,Y|T]) :-
   (Y >= X),
   ascending([Y|T]).
 
 smallest([X], S) :- S = X.
-smallest(L, S) :-
-  L = [X,Y|T],
+smallest([X,Y|T], S) :-
   (
     (Y >= X), smallest([X|T], S);
-    (Y <  X), smallest([Y|T], S)
+    (Y < X), smallest([Y|T], S)
   ).
 
 del(X, [X|Tail], Tail).
