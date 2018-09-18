@@ -1,7 +1,8 @@
 
 % Helpers
-replace(N, X, [], [X=N]).
-replace(N, X, [X=_|S], [X=N|S]).
+replace(_, _, [], []).
+replace(N, X, [X=Z|S], [X=N|Sn]):-
+  replace(N, X, S, Sn).
 replace(N, X, [S0|S], [S0|Sn]) :-
   replace(N, X, S, Sn).
 
