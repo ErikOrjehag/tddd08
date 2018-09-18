@@ -14,7 +14,7 @@ smallest([X,Y|T], S) :-
 
 del(X, [X|T], T).
 del(X, [Y|T], [Y|R]) :-
-    del(X, T, R).cd
+    del(X, T, R).
 
 app([], Ys, Ys).
 app([X|Xs], Ys, [X|Zs]) :-
