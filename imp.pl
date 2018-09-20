@@ -23,12 +23,10 @@ replace(X, N, S0, Sn) :-
   app([X=N], S0, Sn).
 
 % Commands
-execute(S0, skip, S0) :- nl, write('skip'), nl, write(S0), nl.
+execute(S0, skip, S0).
 
 execute(S, set(X, E), Sn) :-
-  nl, write('set '), write(X), write('='), write(E), nl, write(S), nl,
   evaluate(S, E, N),
-  nl, write(S), write(' '), write(E), write(' '), write(N), nl,
   replace(X, N, S, Sn).
 
 execute(S0, if(B, C1, _), Sn) :-
@@ -45,9 +43,7 @@ execute(S, while(B, _), S) :-
   evaluate(S, B, ff).
 execute(S0, seq(C1, C2), S2) :-
   execute(S0, C1, S1),
-  nl, write(S1), nl,
-  execute(S1, C2, S2),
-  nl, write(S2), nl.
+  execute(S1, C2, S2).
 
 % Expressions
 evaluate(_, [], _).
@@ -96,21 +92,28 @@ evaluate(S, E1 < E2, ff) :-
 id(I) :- [I], { atom(I) }.
 num(N) :- [N], { number(N) }.
 
-/* execute([a=3], set(x, id(a)), Sn). */
-/* execute([], set(x, num(5)), Sn). */
-/* execute([a=1, x=3, b=2], set(x, num(5)), Sn). */
-/* evaluate([x=3], id(x), N). */
-/* evaluate([x=3], id(x) + num(5), N). */
-/* evaluate([x=3], id(x) / num(5), N). */
-/* evaluate([x=3], id(x) > num(5), B). */
-/* execute([x=3], set(x, num(4)), Sn). */
-
-/* execute([x=3], seq(set(x, id(x) + num(1)), set(x, id(x) + num(1))), Sn). */
-/* execute([x=3], set(x, id(x) - num(1)), Sn). */
-
-/* execute([x=4], if(id(x) > num(3), set(x, num(0)), set(x, num(1))), Sn). */
-
 /*
+
+evaluate([], id(x), N).
+evaluate([y=2], id(x), N).
+evaluate([x=3], id(x), N).
+evaluate([y=2,x=3], id(x), N).
+evaluate([y=2,x=3], id(x), N).
+
+execute([a=3], set(x, id(a)), Sn).
+execute([], set(x, num(5)), Sn).
+execute([a=1, x=3, b=2], set(x, num(5)), Sn).
+evaluate([x=3], id(x), N).
+evaluate([x=3], id(x) + num(5), N).
+evaluate([x=3], id(x) / num(5), N).
+evaluate([x=3], id(x) > num(5), B).
+execute([x=3], set(x, num(4)), Sn).
+
+execute([x=3], seq(set(x, id(x) + num(1)), set(x, id(x) + num(1))), Sn).
+
+execute([x=3], set(x, id(x) - num(1)), Sn).
+
+execute([x=4], if(id(x) > num(3), set(x, num(0)), set(x, num(1))), Sn).
 
 evaluate([x=4,y=1],id(x)-num(1), N).
 evaluate([x=4],id(x)-num(1), N).
@@ -184,10 +187,49 @@ execute([x=10],
 ).
 
 execute([x=3],
-seq(set(y,num(1)),
-while(x > num(1),
-seq(set(y, id(y) * id(x)),
-set(x, id(x) - num(1)))))
+  seq(
+    set(
+      y, num(1)
+    ),
+    while(
+      x > num(1),
+      set(
+        x,
+        id(x) - num(1)
+      )
+    )
+  )
+, Sn).
+
+execute([x=3, y=1],
+while(
+  id(x) + num(1) > num(1),
+  set(
+    x,
+    num(1)
+  )
+)
+, Sn).
+
+execute([x=3],
+  seq(
+    set(
+      y, num(1)
+    ),
+    while(
+      id(x) > num(1),
+      seq(
+        set(
+          y,
+          id(y) * id(x)
+        ),
+        set(
+          x,
+          id(x) - num(1)
+        )
+      )
+    )
+  )
 , Sn).
 
 */
