@@ -65,3 +65,10 @@ likes_ulrika :-
     nl,
     write(N),
     write(' People likes ulrika').
+
+:- begin_tests(db).
+
+ test(kind) :-
+   kind(bosse).
+
+ :- end_tests(db).
