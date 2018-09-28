@@ -2,7 +2,7 @@
 % TDDD08 Logic Programming
 %
 % top predicate:
-% scan(+String, -Tokens) 
+% scan(+String, -Tokens)
 %
 % try: scan("x:=3; y:=1; while x>1 do y := y*x; x := x-1 od",Tokens).
 %
