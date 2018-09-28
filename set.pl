@@ -28,66 +28,13 @@ intersect([H1|T1], [H2|T2], T) :-
   dif(H1, H2),
   intersect([H1|T1], T2, T).
 
-set([]).
-set([_]).
-set([H1,H2|T]) :-
-  H1 @< H2,
-  set([H2|T]).
-
-/*
-findall(L, powerset([a, b, c], L), P).
-
-findall(X, del(X, [a, b, c], Y), P).
-
-findall(X, del(_, [a, b, c], X), P).
-
-
-[
-  [a,b,c],
-  [
-    [b,c],
-    [
-      [c],
-      [
-        []
-      ]
-    ],
-    [
-      [b],
-      [
-        []
-      ]
-    ]
-  ],
-  [
-    [a,c],
-    [
-      [c],
-      [
-        []
-      ]
-    ],
-    [
-      [a],
-      [
-        []
-      ]
-    ]
-  ],[[a,b],[[b],[[]]],[[a],[[]]]]]
-
-  findall(X, del(_,[a], X), P).
-  findall(a, del(_, [a, b, c], X), P).
-*/
-
 pow([], []).
-pow([H|T], P) :-
-  nl, write('1: '), write(H), write(' '), write(T), write(' '), write(P), nl,
-  pow(T,P).
+pow([_|T], P) :-
+  pow(T, P).
 pow([H|T], [H|P]) :-
-  nl, write('2: '), write(H), write(' '), write(T), write(' '), write(P), nl,
-  pow(T,P).
-powerset(L, P) :-
-  findall(L, pow([a, b, c], L), P).
+  pow(T, P).
+powerset(IN, P) :-
+  findall(L, pow(IN, L), P).
 
 /*
 powerset([a,b,c], L).

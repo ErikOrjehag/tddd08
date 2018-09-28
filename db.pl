@@ -1,3 +1,5 @@
+
+/* Facts */
 man(nisse).
 man(peter).
 man(bosse).
@@ -29,8 +31,7 @@ happy(X) :-
     likes(Y, X).
 
 /*
-All men likes beatiful women!
-Vet ej om det här är korrekt!
+All men likes all women who are beatiful
 */
 likes(X, Y) :-
     man(X),
@@ -57,6 +58,12 @@ likes(ulrika, X) :-
     ),
     likes(X, ulrika).
 
+/*
+Produces the set of men who likes ulrika
+and puts them in S.
+Calculates the length of the set, and then prints
+both the set and the length.
+*/
 likes_ulrika :-
     setof(X, likes(X, ulrika), S),
     length(S, N),
@@ -66,9 +73,33 @@ likes_ulrika :-
     write(N),
     write(' People likes ulrika').
 
-:- begin_tests(db).
 
- test(kind) :-
-   kind(bosse).
 
- :- end_tests(db).
+/*
+
+TEST CASES:
+
+| ?- happy(X).
+X = nisse ? ;
+X = bettan ? ;
+X = peter ? ;
+X = ulrika ? ;
+no
+
+| ?- likes(X,Y).
+X = nisse,
+Y = ulrika ? ;
+X = peter,
+Y = ulrika ? ;
+X = bosse,
+Y = ulrika ? ;
+X = ulrika,
+Y = peter ? ;
+no
+
+| ?- likes_ulrika.
+People who like ulrika: [bosse,nisse,peter]
+3 People likes ulrika
+yes
+
+*/
