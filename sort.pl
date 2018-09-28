@@ -5,7 +5,7 @@ ascending([X,Y|T]) :-
   (Y >= X),
   ascending([Y|T]).
 
-smallest([X], S) :- S = X.
+smallest([X], X).
 smallest([X,Y|T], S) :-
   (
     (Y >= X), smallest([X|T], S);
