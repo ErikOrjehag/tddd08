@@ -1,3 +1,6 @@
+/*
+Union of two lists
+*/
 union([], [], []).
 union([H1|T1], [], [H1|T]) :-
   union(T1, [], T).
@@ -14,6 +17,9 @@ union([H1|T1], [H2|T2], [H2|T]) :-
   \+ dif(H1, H2),
   union(T1, T2, T).
 
+/*
+Intersection of two lists
+*/
 intersect([], [], []).
 intersect([_], [], []).
 intersect([], [_], []).
@@ -28,6 +34,9 @@ intersect([H1|T1], [H2|T2], T) :-
   dif(H1, H2),
   intersect([H1|T1], T2, T).
 
+/*
+Powerset
+*/
 pow([], []).
 pow([_|T], P) :-
   pow(T, P).
