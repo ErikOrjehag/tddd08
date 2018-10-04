@@ -115,35 +115,19 @@ num(N) :- [N], { number(N) }.
 
 /*
 
-evaluate([], id(x), N).
-evaluate([y=2], id(x), N).
-evaluate([x=3], id(x), N).
-evaluate([y=2,x=3], id(x), N).
-evaluate([y=2,x=3], id(x), N).
+| ?- execute([a=1, x=3, b=2], set(x, num(5)), Sn).
+Sn = [a=1,b=2,x=5] ? ;
+no
 
-execute([a=3], set(x, id(a)), Sn).
-execute([], set(x, num(5)), Sn).
-execute([a=1, x=3, b=2], set(x, num(5)), Sn).
-evaluate([x=3], id(x), N).
-evaluate([x=3], id(x) + num(5), N).
-evaluate([x=3], id(x) / num(5), N).
-evaluate([x=3], id(x) > num(5), B).
-execute([x=3], set(x, num(4)), Sn).
+| ?- execute([x=3], seq(set(x, id(x) + num(1)), set(x, id(x) + num(1))), Sn).
+Sn = [x=5] ? ;
+no
 
-execute([x=3], seq(set(x, id(x) + num(1)), set(x, id(x) + num(1))), Sn).
+| ?- execute([x=4], if(id(x) > num(3), set(x, num(0)), set(x, num(1))), Sn).
+Sn = [x=0] ? ;
+no
 
-execute([x=3], set(x, id(x) - num(1)), Sn).
-
-execute([x=4], if(id(x) > num(3), set(x, num(0)), set(x, num(1))), Sn).
-
-evaluate([x=4,y=1],id(x)-num(1), N).
-evaluate([x=4],id(x)-num(1), N).
-evaluate([x=4,y=1], id(x), N).
-
-evaluate([x=3], id(x) > num(1), tt).
-execute([x=3], set(x, id(x) - num(1)), Sn).
-
-execute([x=3],
+| ?- execute([x=3],
   seq(
     if(
       id(x) < num(5),
@@ -159,35 +143,10 @@ execute([x=3],
     )
   )
 , Sn).
+Sn = [y=1,x=2] ? ;
+no
 
-execute([x=100],
-  while(
-    id(x) > num(1),
-    set(
-      x,
-      id(x) - num(1)
-    )
-  ), Sn
-).
-
-execute([x=100],
-  while(
-    id(x) > num(1),
-    seq(
-      if(
-        id(x) < num(5),
-        skip,
-        skip
-      ),
-      set(
-        x,
-        id(x) - num(1)
-      )
-    )
-  ), Sn
-).
-
-execute([x=10],
+| ?- execute([x=10],
   while(
     id(x) > num(1),
     seq(
@@ -206,51 +165,15 @@ execute([x=10],
     )
   ), Sn
 ).
+Sn = [y=1,x=1] ? ;
+no
 
-execute([x=3],
-  seq(
-    set(
-      y, num(1)
-    ),
-    while(
-      x > num(1),
-      set(
-        x,
-        id(x) - num(1)
-      )
-    )
-  )
-, Sn).
-
-execute([x=3, y=1],
-while(
-  id(x) + num(1) > num(1),
-  set(
-    x,
-    num(1)
-  )
-)
-, Sn).
-
-execute([x=3],
-  seq(
-    set(
-      y, num(1)
-    ),
-    while(
-      id(x) > num(1),
-      seq(
-        set(
-          y,
-          id(y) * id(x)
-        ),
-        set(
-          x,
-          id(x) - num(1)
-        )
-      )
-    )
-  )
-, Sn).
-
+| ?- execute([x=3],
+  seq(set(y,num(1)),
+    while(id(x) > num(1),
+      seq(set(y, id(y) * id(x)),
+        set(x, id(x) - num(1)))))
+  ,Sn).
+Sn = [y=6,x=1] ? ;
+no
 */

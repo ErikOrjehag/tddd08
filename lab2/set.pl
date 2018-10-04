@@ -48,29 +48,61 @@ powerset(IN, P) :-
 /*
 powerset([a,b,c], L).
 
-set([]).
-set([a]).
-set([a, b, c]).
-set([a, b, c, e, d, k]).
+| ?- union([], [], S).
+S = [] ? ;
+no
 
-union([], [], S).
-union([], [a], S).
-union([a,b,c],[b,c,d], S).
-union([b,c,d], [a,b,c], S).
-union([a, b], [s, t], S).
-union([s, t], [a, b], S).
-union([], [a,b,c,d], S).
-union([a,c,e], [b,d,f,g,h,i], S).
+| ?- union([], [a], S).
+S = [a] ? ;
+no
 
-intersect([], [], S).
-intersect([], [a], S).
-intersect([a,b,c],[b,c,d], S).
-intersect([b,c,d], [a,b,c], S).
-intersect([a, b], [s, t], S).
-intersect([s, t], [a, b], S).
-intersect([], [a,b,c,d], S).
-intersect([a,c,e], [b,d,f,g,h,i], S).
-intersect([a,c,e,g], [c,g,p], S).
+| ?- union([a,b,c],[b,c,d], S).
+S = [a,b,c,d] ? ;
+no
 
+| ?- union([b,c,d], [a,b,c], S).
+S = [a,b,c,d] ? ;
+no
+
+| ?- union([a,c,e], [b,d,f,g,h,i], S).
+S = [a,b,c,d,e,f,g,h,i] ? ;
+no
+
+
+| ?- intersect([], [], S).
+S = [] ? ;
+no
+
+| ?- intersect([], [a], S).
+S = [] ? ;
+no
+
+| ?- intersect([a,b,c],[b,c,d], S).
+S = [b,c] ? ;
+no
+
+| ?- intersect([b,c,d], [a,b,c], S).
+S = [b,c] ? ;
+no
+
+| ?- intersect([a,c,e,g], [c,g,p], S).
+S = [c,g] ? ;
+no
+
+| ?- powerset([a,b,c], L).
+L = [[],[c],[b],[b,c],[a],[a,c],[a,b],[a,b,c]] ? ;
+no
+
+| ?- powerset([a], L).
+L = [[],[a]] ? ;
+no
+
+| ?- powerset([],L).
+L = [[]] ? ;
+no
+
+| ?- powerset([a,b], L).
+L = [[],[b],[a],[a,b]] ? ;
+no
 
 */
