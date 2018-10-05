@@ -1,18 +1,10 @@
 
-
 /*
 
 search(
-  [0, [m, m, m, c, c, c], [], []]
-  [0, [], [], [m, m, m, c, c, c]],
+  [0, [3,3], [0,0], [0,0]]
+  [1, [0,0], [0,0], [3, 3]],
   P).
-
-
-search(
-  [0, [3, 3], [], []]
-  [0, [], [], [3, 3]],
-  P).
-
 
 */
 
@@ -25,68 +17,87 @@ path(X, Y, V, P).
 children(S, CC) :-
   findall(C, child(S, C), CC).
 
+/* Count number of people on boat or bank */
+people([M,C], N) :-
+  N is M + C.
+
 /* Is the ferry floating? */
 floating(F) :-
-  length(F, N),
+  people(F, N),
   N =< 2.
 
-/* Is the ferry movable? */
+/* Does the ferry have a captain? */
 ferryable(F) :-
-  F \= [],
-  floating(F).
+  floating(F),
+  people(F, N),
+  N > 0.
 
 /* Is a bank survivable? */
-survivable([]).
-survivable(B) :-
-  count(m, B, Nm),
-  count(c, B, Nc),
-  Nm >= Nc.
-survivable(B) :-
-  count(m, B, 0).
+survivable([0,_]).
+survivable([M,C]) :-
+  M >= C.
 
-/* Count occurences of X in list */
-count(X, [], 0).
-count(X, [X|T], N) :-
-  count(X, T, N0),
-  N is N0 + 1.
-count(X, [Y|T], N) :-
-  X \= Y,
-  count(X, T, N).
+/* Remove missionary, if possible */
+remove_m([M,C], [Mn,C]) :-
+  M >= 1,
+  Mn is M - 1.
 
-/* Remove element X from L, if possible */
-remove(X, [Y|T], [Y|Tn]) :-
-  remove(X, T, Tn).
-remove(X, [X|T], T).
+/* Remove cannibal, if possible */
+remove_c([M,C], [M,Cn]) :-
+  C >= 1,
+  Cn is C - 1.
 
-/* Add element X to list L */
-add(X, L, [X|L]).
+/* Add missionary */
+add_m([M,C], [Mn,C]) :-
+  Mn is M + 1.
 
-/* Move element X from list A to B, if possible */
-move(X, A, B, An, Bn) :-
-  remove(X, A, An),
-  add(X, B, Bn).
+/* Add cannibal */
+add_c([M,C], [M,Cn]) :-
+  Cn is C + 1.
 
-/* Load passanger from bank to ferry, if possible */
-load(X, B, F, Bn, Fn) :-
-  move(X, B, F, Bn, Fn),
+/* Move missionary, if possible */
+move_m(A, B, An, Bn) :-
+  remove_m(A, An),
+  add_m(B, Bn).
+
+/* Move cannibal, if possible */
+move_c(A, B, An, Bn) :-
+  remove_c(A, An),
+  add_c(B, Bn).
+
+/* Load missionary from bank to ferry, if possible */
+load_m(B, F, Bn, Fn) :-
+  move_m(B, F, Bn, Fn),
   survivable(Bn),
   floating(Fn).
 
-/* Unload passanger from ferry to bank, if possible */
-unload(X, B, F, Bn, Fn) :-
-  move(X, F, B, Bn, Fn),
+/* Load cannibal from bank to ferry, if possible */
+load_c(B, F, Bn, Fn) :-
+  move_c(B, F, Bn, Fn),
+  survivable(Bn),
+  floating(Fn).
+
+/* Unload missionary from ferry to bank, if possible */
+unload_m(B, F, Bn, Fn) :-
+  move_m(F, B, Fn, Bn),
+  survivable(Bn),
+  floating(Fn).
+
+/* Unload cannibal from ferry to bank, if possible */
+unload_c(B, F, Bn, Fn) :-
+  move_c(F, B, Fn, Bn),
   survivable(Bn),
   floating(Fn).
 
 /* Load or unload passangers at bank 1 */
 child([0, B1, F, B2], [0, B1n, Fn, B2]) :-
-  load(m, B1, F, B1n, Fn).
+  load_m(B1, F, B1n, Fn).
 child([0, B1, F, B2], [0, B1n, Fn, B2]) :-
-  load(c, B1, F, B1n, Fn).
+  load_c(B1, F, B1n, Fn).
 child([0, B1, F, B2], [0, B1n, Fn, B2]) :-
-  unload(m, B1, F, B1n, Fn).
+  unload_m(B1, F, B1n, Fn).
 child([0, B1, F, B2], [0, B1n, Fn, B2]) :-
-  unload(c, B1, F, B1n, Fn).
+  unload_c(B1, F, B1n, Fn).
 
 /* Move passangers between banks */
 child([0, B1, F, B2], [1, B1, F, B2]) :-
@@ -96,10 +107,35 @@ child([1, B1, F, B2], [0, B1, F, B2]) :-
 
 /* Load or unload passangers at bank 2 */
 child([1, B1, F, B2], [1, B1, Fn, B2n]) :-
-  load(m, B2, F, B2n, Fn).
+  load_m(B2, F, B2n, Fn).
 child([1, B1, F, B2], [1, B1, Fn, B2n]) :-
-  load(c, B2, F, B2n, Fn).
+  load_c(B2, F, B2n, Fn).
 child([1, B1, F, B2], [1, B1, Fn, B2n]) :-
-  unload(m, B2, F, B2n, Fn).
+  unload_m(B2, F, B2n, Fn).
 child([1, B1, F, B2], [1, B1, Fn, B2n]) :-
-  unload(c, B2, F, B2n, Fn).
+  unload_c(B2, F, B2n, Fn).
+
+
+
+/*
+
+children([0,[3,3],[0,0],[0,0]], C).
+[
+  [0,[3,2],[0,1],[0,0]]
+]
+
+children([0,[3,2],[0,1],[0,0]], C).
+[
+  [0,[2,2],[1,1],[0,0]],
+  [0,[3,2],[0,2],[0,0]],
+  [0,[3,3],[0,-1],[0,0]],
+  [1,[3,2],[0,1],[0,0]]
+]
+
+children([1,[3,2],[0,1],[0,0]], C).
+[
+  [0,[3,2],[0,1],[0,0]],
+  [1,[3,2],[0,0],[0,1]]
+]
+
+*/
