@@ -3,10 +3,23 @@
 
 search(
   [0, [1,1], [0,0], [0,0]],
-  [0, [0,0], [1,1], [0,0]]
+  [0, [0,0], [1,1], [0,0]],
+  L
 ).
 
-remove_explored_2(
+search(
+  [0, [1,1], [0,0], [0,0]],
+  [1, [0,0], [0,0], [1,1]],
+  L
+).
+
+bf_path(
+  [[ [0, [1,1], [0,0], [0,0]] ]],
+  [0, [0,0], [1,1], [0,0]],
+  P
+).
+
+prevent_loops(
   [ [0, [1,1], [0,0], [0,0]], [0, [0,1], [0,0], [0,0]] ],
   [ [0, [0,0], [1,1], [0,0]], [0, [1,1], [0,0], [0,0]] ],
   T
@@ -14,65 +27,63 @@ remove_explored_2(
 
 */
 
-bf_path([[Leaf|Branch]|Branches], Leaf, [Leaf|Branch]) :-
-  nl, write('1'), nl.
+/* Top helper function to do a breadth first search */
+search(X, Y) :-
+  bf_path([[X]], Y, P),
+  reverse(P, PP),
+  write_path(PP),
+  length(PP, L).
+
+/* Calculate a breadth first path */
+bf_path([[Leaf|Branch]|Branches], Leaf, [Leaf|Branch]).
 bf_path([[Leaf|Branch]|Branches], Goal, Path) :-
-  nl, write('2'), nl,
   children(Leaf, Adjacent),
-  %remove_explored(Adjacent, [[Leaf|Branch]|Branches], Trimmed),
-  remove_explored_2(Adjacent, Branch, Trimmed),
+  prevent_loops(Adjacent, Branch, Trimmed),
   dif(Trimmed, []),
   expand([Leaf|Branch], Trimmed, Expanded),
-  nl, write(Expanded), nl,
   append(Branches, Expanded, NewBranches),
   bf_path(NewBranches, Goal, Path).
 bf_path([[Leaf|Branch]|Branches], Goal, Path) :-
-  nl, write('3'), nl,
   children(Leaf, Leaves),
-  %remove_explored(Leaves, [[Leaf|Branch]|Branches], []),
-  %remove_explored_2(Leaves, Branch, []),
+  prevent_loops(Leaves, Branch, []),
   bf_path(Branches, Goal, Path).
 
-remove_explored_2([], _, []).
-remove_explored_2([H1|T1], Branch, [H1|Trimmed]) :-
+/* Remove new nodes that exists in the branch because they will cause loops */
+prevent_loops([], _, []).
+prevent_loops([H1|T1], Branch, [H1|Trimmed]) :-
   \+exists(H1, Branch),
-  remove_explored_2(T1, Branch, Trimmed).
-remove_explored_2([H1|T1], Branch, Trimmed) :-
+  prevent_loops(T1, Branch, Trimmed).
+prevent_loops([H1|T1], Branch, Trimmed) :-
   exists(H1, Branch),
-  remove_explored_2(T1, Branch, Trimmed).
+  prevent_loops(T1, Branch, Trimmed).
 
-
-remove_explored([], _, []).
-remove_explored([H1|T1], Branches, [H1|Trimmed]) :-
-  \+exists_multi(H1, Branches),
-  remove_explored(T1, Branches, Trimmed).
-remove_explored([H1|T1], Branches, Trimmed) :-
-  exists_multi(H1, Branches),
-  remove_explored(T1, Branches, Trimmed).
-
+/* Run exists condition for every element in the branch (second argument) */
 exists_multi(E, [BH|BT]) :-
   exists(E, BH);
   exists_multi(E, BT).
 
+/* Check if element i exists in the given list */
 exists(H, [H|T]).
 exists(E, [H|T]) :-
   exists(E, T).
 
-search(X, Y) :-
-  bf_path([[X]], Y, P),
-  reverse(P, PP),
-  write_path(PP).
-
+/* Reverse the order of a list */
 reverse([], []).
 reverse([H|L1], Ln) :-
   reverse(L1, L2),
   append(L2, [H], Ln).
 
-
+/* Pretty printing of path search solution */
 write_path([]).
-write_path([H|T]) :-
+write_path(P) :-
+  write('State sequence:'), nl,
+  write_path(P, 1).
+write_path([], _).
+write_path([H|T], I) :-
+  write(I), write('. '),
   write(H), nl,
-  write_path(T).
+  II is I + 1,
+  write_path(T, II).
 
 /* Expand from the course book p.186 */
 expand(X, [], []).
