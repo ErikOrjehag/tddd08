@@ -55,19 +55,19 @@ bf_path([[Leaf|Branch]|Branches], Goal, Path) :-
   prevent_loops(Leaves, Branch, []),
   bf_path(Branches, Goal, Path).
 
-  /* Calculate a depth first path */
-  df_path([[Leaf|Branch]|Branches], Leaf, [Leaf|Branch]).
-  df_path([[Leaf|Branch]|Branches], Goal, Path) :-
-    children(Leaf, Adjacent),
-    prevent_loops(Adjacent, Branch, Trimmed),
-    dif(Trimmed, []),
-    expand([Leaf|Branch], Trimmed, Expanded),
-    append(Expanded, Branches, NewBranches), % The append is reversed -> DFS
-    df_path(NewBranches, Goal, Path).
-  df_path([[Leaf|Branch]|Branches], Goal, Path) :-
-    children(Leaf, Leaves),
-    prevent_loops(Leaves, Branch, []),
-    df_path(Branches, Goal, Path).
+/* Calculate a depth first path */
+df_path([[Leaf|Branch]|Branches], Leaf, [Leaf|Branch]).
+df_path([[Leaf|Branch]|Branches], Goal, Path) :-
+  children(Leaf, Adjacent),
+  prevent_loops(Adjacent, Branch, Trimmed),
+  dif(Trimmed, []),
+  expand([Leaf|Branch], Trimmed, Expanded),
+  append(Expanded, Branches, NewBranches), % The append is reversed -> DFS
+  df_path(NewBranches, Goal, Path).
+df_path([[Leaf|Branch]|Branches], Goal, Path) :-
+  children(Leaf, Leaves),
+  prevent_loops(Leaves, Branch, []),
+  df_path(Branches, Goal, Path).
 
 /* Remove new nodes that exists in the branch because they will cause loops */
 prevent_loops([], _, []).
