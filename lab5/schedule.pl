@@ -1,5 +1,8 @@
 :- use_module(library(clpfd)).
 
+/*
+Produces and formats the answer
+*/
 answer :-
   start(Tasks, Cost, Manpower, Duration),
   write('Manpower: '), write(Manpower), nl,
@@ -13,12 +16,19 @@ answer :-
   format("|~`-t~31||~n", []),
   retractall(id(_,_)).
 
+/*
+Formats and writes tasks to console
+*/
 write_schedule([]).
 write_schedule([task(S,D,E,R,INT_ID)|Tasks]) :-
   id(ID, INT_ID),
   format("|~t~a~3||~t~d~6+|~t~d~9+|~t~d~4+|~t~d~9+|~n", [ID,S,D,E,R]),
   write_schedule(Tasks).
 
+/*
+Finds a solution using cumulative
+given the facts in the file
+*/
 start(Tasks, Cost, L, End) :-
   findall(container(ID, R, D), container(ID, R, D), Containers),
   create_tasks(0, Containers, Tasks),
@@ -35,15 +45,31 @@ start(Tasks, Cost, L, End) :-
   append(V0, [Cost], Vars),
   labeling([minimize(Cost)], Vars).
 
+/*
+Used as a condition
+to construct a list of all Ends
+*/
 task_end(task(_,_,End,_,_), End).
 
+/*
+Used as a condition to
+construct a list of all Starts
+*/
 task_start(task(Start,_,_,_,_), Start).
 
+/*
+Creates a list using based on predicate C_2
+*/
 maplist(_C_2, [], []).
 maplist( C_2, [X|Xs], [Y|Ys]) :-
    call(C_2, X, Y),
    maplist( C_2, Xs, Ys).
 
+/*
+Creates the task for required
+for the cumulative call based on the facts
+in the file
+*/
 create_tasks(_, [], []).
 create_tasks(INT, [container(ID, R, D)|T], [task(_,D,_,R,INT)|Tasks]) :-
   assert(id(ID, INT)),
@@ -51,13 +77,17 @@ create_tasks(INT, [container(ID, R, D)|T], [task(_,D,_,R,INT)|Tasks]) :-
   create_tasks(I, T, Tasks).
 
 /*
-
+Sets the CLPFD constraints for the solution
+using the facts in the file
 */
 set_constraints([]).
 set_constraints([task(S,D,E,R,ID)|Tasks]) :-
   set_constraints_help(ID, S, E, Tasks),
   set_constraints(Tasks).
 
+/*
+A helper function for set_constraints
+*/
 set_constraints_help(_, _, _, []).
 set_constraints_help(INT_ID, S, E, [task(Si,_,Ei,_,INT_IDi)|Tasks]) :-
   id(ID, INT_ID),
